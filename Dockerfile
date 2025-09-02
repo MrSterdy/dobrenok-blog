@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libpq-dev \
     libzip-dev \
+    libicu-dev \
     zip \
     unzip \
     openssl \
@@ -18,7 +19,8 @@ RUN apt-get update && apt-get install -y \
     supervisor \
     cron \
     && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-    && docker-php-ext-install pdo_pgsql pgsql mbstring exif pcntl bcmath gd zip \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install pdo_pgsql pgsql mbstring exif pcntl bcmath gd zip intl opcache pcntl sodium \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
