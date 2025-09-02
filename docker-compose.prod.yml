@@ -11,6 +11,8 @@ services:
       - app_storage:/var/www/html/storage
       - app_cache:/var/www/html/bootstrap/cache
       - ./docker/logs:/var/www/html/storage/logs
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     env_file:
       - .env
     networks:
