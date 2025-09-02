@@ -63,14 +63,15 @@ jobs:
 
     - name: Deploy to server
       uses: appleboy/ssh-action@v1.2.2
+      env:
+        IMAGE_NAME: ghcr.io/mrsterdy/dobrenok-blog:latest
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: ${{ secrets.PORT }}
         script_stop: true
-        env:
-          IMAGE_NAME: ghcr.io/mrsterdy/dobrenok-blog:latest
+        envs: IMAGE_NAME
         script: |
           # Переход в директорию проекта
           cd ${{ secrets.PROJECT_PATH }}
