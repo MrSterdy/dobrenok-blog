@@ -1,0 +1,63 @@
+# Git
+.git
+.gitignore
+README.md
+
+# Environment files
+.env*
+!.env.example
+
+# Dependencies
+node_modules
+vendor
+
+# Build artifacts
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/bootstrap/cache/*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
+
+# Documentation
+docs/
+
+# Tests
+tests/
+phpunit.xml
+
+# Docker files (не копируем в контейнер)
+docker-compose*.yml
+Dockerfile*
+
+# Development tools
+.php_cs.cache
+.phpunit.result.cache
+
+# Storage (будет монтироваться как volume)
+storage/app/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*
+
+# Public storage (символическая ссылка будет создана)
+public/storage
