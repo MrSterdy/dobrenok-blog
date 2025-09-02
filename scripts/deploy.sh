@@ -27,7 +27,7 @@ log_error() {
 # Переменные
 PROJECT_PATH=${PROJECT_PATH:-"/var/www/dobrenok-blog"}
 DOCKER_COMPOSE_FILE="docker-compose.prod.yml"
-IMAGE_NAME=${IMAGE_NAME:-"ghcr.io/dobrenok/dobrenok-blog:latest"}
+IMAGE_NAME=${IMAGE_NAME:-"ghcr.io/mrsterdy/dobrenok-blog:latest"}
 BACKUP_DIR="${PROJECT_PATH}/backups"
 
 # Создание директории для бэкапов

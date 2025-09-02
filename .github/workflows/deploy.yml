@@ -69,6 +69,8 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: ${{ secrets.PORT }}
         script_stop: true
+        env:
+          IMAGE_NAME: ghcr.io/mrsterdy/dobrenok-blog:latest
         script: |
           # Переход в директорию проекта
           cd ${{ secrets.PROJECT_PATH }}
@@ -77,13 +79,15 @@ jobs:
           docker-compose -f docker-compose.prod.yml down
 
           # Получение обновлений
+          git add -A || true
+          git stash push -m "Auto-stash before deploy" || true
           git pull origin main
 
           # Логин в GitHub Container Registry
           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
           # Загрузка нового образа
-          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          docker pull $IMAGE_NAME
 
           # Запуск контейнеров с новым образом
           docker-compose -f docker-compose.prod.yml up -d
