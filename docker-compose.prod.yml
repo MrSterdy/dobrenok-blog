@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # Laravel приложение (production)
   app:
-    image: ghcr.io/${{ github.repository }}:latest
+    image: ghcr.io/mrstery/dobrenok-blog:latest
     container_name: dobrenok_blog_app_prod
     restart: unless-stopped
     working_dir: /var/www/html
@@ -11,14 +11,10 @@ services:
       - app_storage:/var/www/html/storage
       - app_cache:/var/www/html/bootstrap/cache
       - ./docker/logs:/var/www/html/storage/logs
-    environment:
-      - CONTAINER_ROLE=app
     env_file:
       - .env
     networks:
       - dobrenok_network
-    depends_on:
-      - nginx
     healthcheck:
       test: ["CMD", "php", "-v"]
       interval: 30s
@@ -39,6 +35,8 @@ services:
       - ./docker/nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
       - ./docker/nginx/ssl:/etc/nginx/ssl:ro
       - ./docker/nginx/logs:/var/log/nginx
+    depends_on:
+      - app
     networks:
       - dobrenok_network
     healthcheck:
@@ -46,49 +44,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-
-  # Laravel Queue Worker (отдельный контейнер для очередей)
-  queue:
-    image: ghcr.io/${{ github.repository }}:latest
-    container_name: dobrenok_blog_queue_prod
-    restart: unless-stopped
-    working_dir: /var/www/html
-    volumes:
-      - app_storage:/var/www/html/storage
-      - app_cache:/var/www/html/bootstrap/cache
-    environment:
-      - CONTAINER_ROLE=queue
-    env_file:
-      - .env
-    command: php artisan queue:work --sleep=3 --tries=3 --max-time=3600 --daemon
-    networks:
-      - dobrenok_network
-    depends_on:
-      - app
-    healthcheck:
-      test: ["CMD", "php", "artisan", "queue:work", "--help"]
-      interval: 60s
-      timeout: 10s
-      retries: 3
-
-  # Laravel Scheduler (cron задачи)
-  scheduler:
-    image: ghcr.io/${{ github.repository }}:latest
-    container_name: dobrenok_blog_scheduler_prod
-    restart: unless-stopped
-    working_dir: /var/www/html
-    volumes:
-      - app_storage:/var/www/html/storage
-      - app_cache:/var/www/html/bootstrap/cache
-    environment:
-      - CONTAINER_ROLE=scheduler
-    env_file:
-      - .env
-    command: /bin/sh -c "while true; do php artisan schedule:run; sleep 60; done"
-    networks:
-      - dobrenok_network
-    depends_on:
-      - app
 
 volumes:
   app_storage:
