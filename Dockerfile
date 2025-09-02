@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y \
     cron \
     && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
     && docker-php-ext-configure intl \
-    && docker-php-ext-install pdo_pgsql pgsql mbstring exif pcntl bcmath gd zip intl opcache pcntl sodium \
+    && docker-php-ext-install pdo_pgsql pgsql mbstring exif pcntl bcmath gd zip intl opcache pcntl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
