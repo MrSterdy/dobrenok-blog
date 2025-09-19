@@ -33,7 +33,6 @@ services:
       - "443:443"
     volumes:
       - app_storage:/var/www/html/storage:ro
-      - app_storage:/var/www/html/public/storage:ro
       - ./public:/var/www/html/public:ro
       - ./docker/nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
       - ./docker/nginx/ssl:/etc/nginx/ssl:ro
