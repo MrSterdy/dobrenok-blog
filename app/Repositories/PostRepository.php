@@ -31,13 +31,13 @@ class PostRepository implements PostRepositoryInterface
 
         if ($query->category_id) {
             $builder->whereHas('categories', function ($q) use ($query) {
-                $q->where(config('filamentblog.tables.prefix').'categories', $query->category_id);
+                $q->where(config('filamentblog.tables.prefix') . 'categories', $query->category_id);
             });
         }
 
         if ($query->tag_id) {
             $builder->whereHas('tags', function ($q) use ($query) {
-                $q->where(config('filamentblog.tables.prefix').'tags', $query->tag_id);
+                $q->where(config('filamentblog.tables.prefix') . 'tags', $query->tag_id);
             });
         }
 
@@ -53,11 +53,15 @@ class PostRepository implements PostRepositoryInterface
 
     public function getPostBySlug(GetPostBySlugQuery $query): ?Post
     {
-        return Post::query()
+        $builder = Post::query()
             ->with(['project', 'user', 'categories', 'tags'])
             ->where('slug', $query->slug)
-            ->where('status', PostStatus::PUBLISHED)
-            ->first();
+            ->where('status', PostStatus::PUBLISHED);
+
+        if ($query->project_id) {
+            $builder->where('project_id', $query->project_id);
+        }
+
+        return $builder->first();
     }
 }
-

@@ -20,15 +20,509 @@
         }
     ],
     "paths": {
-        "/posts": {
+        "/projects/{id}/applications": {
+            "post": {
+                "tags": [
+                    "Applications"
+                ],
+                "summary": "Создать заявку",
+                "operationId": "2cbf2373ee3b4601d5bb84606c5be3c7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID проекта",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "data"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Обратный звонок"
+                                    },
+                                    "data": {
+                                        "type": "object",
+                                        "example": {
+                                            "full_name": "Иван Иванов",
+                                            "email": "ivan@example.com",
+                                            "phone": "+79990000000"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Создано",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Resource created successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Application"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{id}/employees": {
+            "get": {
+                "tags": [
+                    "Employees"
+                ],
+                "summary": "Список сотрудников проекта",
+                "description": "Возвращает пагинированный список сотрудников для указанного проекта",
+                "operationId": "7ab30d47855cf2cc841abde4669e3d1c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID проекта",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Номер страницы",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Количество элементов на странице",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 50,
+                            "minimum": 1,
+                            "example": 15
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Поиск по имени или описанию",
+                        "schema": {
+                            "type": "string",
+                            "example": "Иван"
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "Поле для сортировки",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "id",
+                                "name",
+                                "created_at",
+                                "updated_at"
+                            ],
+                            "example": "created_at"
+                        }
+                    },
+                    {
+                        "name": "sort_direction",
+                        "in": "query",
+                        "description": "Направление сортировки",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "example": "desc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Employee"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "pagination": {
+                                                    "$ref": "#/components/schemas/PaginationMeta"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{id}/events": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Список мероприятий проекта",
+                "description": "Возвращает пагинированный список мероприятий для указанного проекта",
+                "operationId": "7ce378f2ea5aaec695ae9021c9ff8b8c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID проекта",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "month",
+                        "in": "query",
+                        "description": "Месяц (1-12) для фильтрации по дате начала",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 12,
+                            "minimum": 1,
+                            "example": 9
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Номер страницы",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Количество элементов на странице",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 50,
+                            "minimum": 1,
+                            "example": 15
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Поиск по названию или описанию",
+                        "schema": {
+                            "type": "string",
+                            "example": "митап"
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "Поле для сортировки",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "id",
+                                "name",
+                                "start_date",
+                                "created_at",
+                                "updated_at"
+                            ],
+                            "example": "start_date"
+                        }
+                    },
+                    {
+                        "name": "sort_direction",
+                        "in": "query",
+                        "description": "Направление сортировки",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "example": "desc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Event"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "pagination": {
+                                                    "$ref": "#/components/schemas/PaginationMeta"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{id}/partners": {
+            "get": {
+                "tags": [
+                    "Partners"
+                ],
+                "summary": "Список партнеров проекта",
+                "description": "Возвращает пагинированный список партнеров для указанного проекта",
+                "operationId": "2db172aad8511ff92cf09d75cbb1160e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID проекта",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Номер страницы",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Количество элементов на странице",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 50,
+                            "minimum": 1,
+                            "example": 15
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Поиск по названию или описанию",
+                        "schema": {
+                            "type": "string",
+                            "example": "Acme"
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "Поле для сортировки",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "id",
+                                "name",
+                                "created_at",
+                                "updated_at"
+                            ],
+                            "example": "created_at"
+                        }
+                    },
+                    {
+                        "name": "sort_direction",
+                        "in": "query",
+                        "description": "Направление сортировки",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "example": "desc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Partner"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "pagination": {
+                                                    "$ref": "#/components/schemas/PaginationMeta"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{id}/posts": {
             "get": {
                 "tags": [
                     "Posts"
                 ],
-                "summary": "Получить список постов",
-                "description": "Возвращает пагинированный список постов с возможностью поиска, фильтрации и сортировки",
-                "operationId": "cce7863441436fd49dc474491f658292",
+                "summary": "Получить список постов проекта",
+                "description": "Возвращает пагинированный список постов проекта с возможностью поиска, фильтрации и сортировки",
+                "operationId": "02f2f22e5c5db0a8ffed298eec50b6aa",
                 "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID проекта",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
                     {
                         "name": "page",
                         "in": "query",
@@ -57,15 +551,6 @@
                         "schema": {
                             "type": "string",
                             "example": "Laravel"
-                        }
-                    },
-                    {
-                        "name": "project_id",
-                        "in": "query",
-                        "description": "Фильтр по ID проекта",
-                        "schema": {
-                            "type": "integer",
-                            "example": 1
                         }
                     },
                     {
@@ -178,15 +663,25 @@
                 }
             }
         },
-        "/posts/{slug}": {
+        "/projects/{id}/posts/{slug}": {
             "get": {
                 "tags": [
                     "Posts"
                 ],
-                "summary": "Получить пост по slug",
-                "description": "Возвращает информацию о конкретном посте",
-                "operationId": "20827f95d9cbef400d515a1a8bef8b35",
+                "summary": "Получить пост проекта по slug",
+                "description": "Возвращает информацию о конкретном посте проекта",
+                "operationId": "b9c674ea3afa5d8ed086860ad66abb08",
                 "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID проекта",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
                     {
                         "name": "slug",
                         "in": "path",
@@ -431,6 +926,41 @@
     },
     "components": {
         "schemas": {
+            "Application": {
+                "description": "Заявка",
+                "properties": {
+                    "id": {
+                        "description": "ID заявки",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Название заявки",
+                        "type": "string",
+                        "example": "Обратный звонок"
+                    },
+                    "project_id": {
+                        "description": "ID проекта",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "data": {
+                        "description": "Данные заявки (имя, email, телефон и т.д.)",
+                        "type": "object"
+                    },
+                    "created_at": {
+                        "description": "Дата создания",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Дата обновления",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
             "Category": {
                 "description": "Категория поста",
                 "properties": {
@@ -448,6 +978,144 @@
                         "description": "URL-slug категории",
                         "type": "string",
                         "example": "technologies"
+                    }
+                },
+                "type": "object"
+            },
+            "Employee": {
+                "description": "Сотрудник проекта",
+                "properties": {
+                    "id": {
+                        "description": "ID сотрудника",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Имя сотрудника",
+                        "type": "string",
+                        "example": "Иван Иванов"
+                    },
+                    "description": {
+                        "description": "Описание сотрудника",
+                        "type": "string",
+                        "example": "Краткое био",
+                        "nullable": true
+                    },
+                    "group": {
+                        "description": "Группа сотрудника",
+                        "type": "string",
+                        "example": "Экспертная группа",
+                        "nullable": true
+                    },
+                    "cover_photo_url": {
+                        "description": "URL фотографии",
+                        "type": "string",
+                        "example": "http://localhost:8000/storage/employee-photos/photo.jpg"
+                    },
+                    "created_at": {
+                        "description": "Дата создания",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15T10:30:00Z"
+                    },
+                    "updated_at": {
+                        "description": "Дата обновления",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15T10:30:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Event": {
+                "description": "Мероприятие проекта",
+                "properties": {
+                    "id": {
+                        "description": "ID мероприятия",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Название",
+                        "type": "string",
+                        "example": "Митап Laravel"
+                    },
+                    "slug": {
+                        "description": "Ссылка",
+                        "type": "string",
+                        "example": "mitap-laravel"
+                    },
+                    "short_description": {
+                        "description": "Краткое описание",
+                        "type": "string",
+                        "example": "Краткое описание мероприятия..."
+                    },
+                    "body": {
+                        "description": "Описание мероприятия",
+                        "type": "string",
+                        "example": "Подробности мероприятия..."
+                    },
+                    "cover_photo_url": {
+                        "description": "URL обложки",
+                        "type": "string",
+                        "example": "http://localhost:8000/storage/event-images/cover.jpg"
+                    },
+                    "start_date": {
+                        "description": "Дата начала",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-09-20T18:00:00Z"
+                    },
+                    "created_at": {
+                        "description": "Дата создания",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-09-19T10:30:00Z"
+                    },
+                    "updated_at": {
+                        "description": "Дата обновления",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-09-19T10:30:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Partner": {
+                "description": "Партнер проекта",
+                "properties": {
+                    "id": {
+                        "description": "ID партнера",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Название партнера",
+                        "type": "string",
+                        "example": "Acme Inc."
+                    },
+                    "description": {
+                        "description": "Описание партнера",
+                        "type": "string",
+                        "example": "Описание партнера",
+                        "nullable": true
+                    },
+                    "cover_photo_url": {
+                        "description": "URL изображения",
+                        "type": "string",
+                        "example": "http://localhost:8000/storage/partner-images/logo.png"
+                    },
+                    "created_at": {
+                        "description": "Дата создания",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15T10:30:00Z"
+                    },
+                    "updated_at": {
+                        "description": "Дата обновления",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15T10:30:00Z"
                     }
                 },
                 "type": "object"
@@ -561,6 +1229,18 @@
                         "description": "Описание проекта",
                         "type": "string",
                         "example": "A blog project using Laravel",
+                        "nullable": true
+                    },
+                    "cover_photo_url": {
+                        "description": "URL обложки проекта",
+                        "type": "string",
+                        "example": "http://localhost:8000/storage/project-images/cover.jpg",
+                        "nullable": true
+                    },
+                    "home_url": {
+                        "description": "URL домашней страницы проекта",
+                        "type": "string",
+                        "example": "http://localhost:8000/projects/1",
                         "nullable": true
                     },
                     "posts_count": {
@@ -707,6 +1387,22 @@
         }
     },
     "tags": [
+        {
+            "name": "Applications",
+            "description": "Заявки проектов"
+        },
+        {
+            "name": "Employees",
+            "description": "Сотрудники проектов"
+        },
+        {
+            "name": "Events",
+            "description": "Мероприятия проектов"
+        },
+        {
+            "name": "Partners",
+            "description": "Партнеры проектов"
+        },
         {
             "name": "Posts",
             "description": "Управление постами блога"

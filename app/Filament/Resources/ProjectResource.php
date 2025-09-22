@@ -15,6 +15,7 @@ class ProjectResource extends Resource
     protected static ?string $model = Project::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-folder';
+    protected static ?string $navigationGroup = 'Проекты';
     protected static ?string $navigationLabel = 'Проекты';
     protected static ?int $navigationSort = 1;
 
@@ -31,6 +32,18 @@ class ProjectResource extends Resource
                     ->label('Название')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('home_url')
+                    ->label('URL домашней страницы')
+                    ->maxLength(255),
+                Forms\Components\FileUpload::make('cover_photo_path')
+                    ->label('Обложка')
+                    ->disk('public')
+                    ->directory('project-images')
+                    ->visibility('public')
+                    ->image()
+                    ->preserveFilenames()
+                    ->imageEditor()
+                    ->maxSize(1024 * 5),
                 Forms\Components\Textarea::make('description')
                     ->label('Описание')
                     ->rows(3)
@@ -45,7 +58,14 @@ class ProjectResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label('Название')
                     ->searchable()
+                    ->sortable(),   
+                Tables\Columns\TextColumn::make('home_url')
+                    ->label('URL домашней страницы')
                     ->sortable(),
+                Tables\Columns\ImageColumn::make('cover_photo_path')
+                    ->label('Обложка')
+                    ->disk('public')
+                    ->square(),
                 Tables\Columns\TextColumn::make('description')
                     ->label('Описание')
                     ->limit(50)

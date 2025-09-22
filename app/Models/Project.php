@@ -13,10 +13,32 @@ class Project extends Model
     protected $fillable = [
         'name',
         'description',
+        'cover_photo_url',
+        'home_url',
     ];
 
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class);
+    }
+
+    public function partners(): HasMany
+    {
+        return $this->hasMany(Partner::class);
+    }
+
+    public function employees(): HasMany
+    {
+        return $this->hasMany(Employee::class);
+    }
+
+    public function events(): HasMany
+    {
+        return $this->hasMany(Event::class);
+    }
+
+    public function applications(): HasMany
+    {
+        return $this->hasMany(Application::class);
     }
 }

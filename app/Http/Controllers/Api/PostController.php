@@ -21,11 +21,18 @@ class PostController extends Controller
     ) {}
 
     #[OA\Get(
-        path: "/posts",
-        summary: "Получить список постов",
-        description: "Возвращает пагинированный список постов с возможностью поиска, фильтрации и сортировки",
+        path: "/projects/{id}/posts",
+        summary: "Получить список постов проекта",
+        description: "Возвращает пагинированный список постов проекта с возможностью поиска, фильтрации и сортировки",
         tags: ["Posts"],
         parameters: [
+            new OA\Parameter(
+                name: "id",
+                in: "path",
+                required: true,
+                description: "ID проекта",
+                schema: new OA\Schema(type: "integer", example: 1)
+            ),
             new OA\Parameter(
                 name: "page",
                 in: "query",
@@ -43,12 +50,6 @@ class PostController extends Controller
                 in: "query",
                 description: "Поиск по заголовку, подзаголовку или содержимому поста",
                 schema: new OA\Schema(type: "string", example: "Laravel")
-            ),
-            new OA\Parameter(
-                name: "project_id",
-                in: "query",
-                description: "Фильтр по ID проекта",
-                schema: new OA\Schema(type: "integer", example: 1)
             ),
             new OA\Parameter(
                 name: "category_id",
@@ -112,7 +113,7 @@ class PostController extends Controller
             )
         ]
     )]
-    public function index(Request $request): JsonResponse
+    public function index(Request $request, int $id): JsonResponse
     {
         try {
             $query = new GetPostsQuery(
@@ -122,7 +123,7 @@ class PostController extends Controller
                     ApiConstants::MAX_PER_PAGE
                 ),
                 search: $request->get('search'),
-                project_id: $request->get('project_id') ? (int) $request->get('project_id') : null,
+                project_id: $id,
                 category_id: $request->get('category_id') ? (int) $request->get('category_id') : null,
                 tag_id: $request->get('tag_id') ? (int) $request->get('tag_id') : null,
                 status: in_array($request->get('status'), [ApiConstants::POST_STATUS_PUBLISHED, ApiConstants::POST_STATUS_PENDING, ApiConstants::POST_STATUS_SCHEDULED])
@@ -148,11 +149,18 @@ class PostController extends Controller
     }
 
     #[OA\Get(
-        path: "/posts/{slug}",
-        summary: "Получить пост по slug",
-        description: "Возвращает информацию о конкретном посте",
+        path: "/projects/{id}/posts/{slug}",
+        summary: "Получить пост проекта по slug",
+        description: "Возвращает информацию о конкретном посте проекта",
         tags: ["Posts"],
         parameters: [
+            new OA\Parameter(
+                name: "id",
+                in: "path",
+                required: true,
+                description: "ID проекта",
+                schema: new OA\Schema(type: "integer", example: 1)
+            ),
             new OA\Parameter(
                 name: "slug",
                 in: "path",
@@ -186,10 +194,10 @@ class PostController extends Controller
             )
         ]
     )]
-    public function show(string $slug): JsonResponse
+    public function show(int $id, string $slug): JsonResponse
     {
         try {
-            $query = new GetPostBySlugQuery($slug);
+            $query = new GetPostBySlugQuery($slug, $id);
             $post = $this->postService->getPostBySlug($query);
 
             if (!$post) {
