@@ -23,3 +23,8 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 /scripts/setup-server.sh
+
+# SSL сертификаты
+/docker/nginx/ssl/*.pem
+/docker/nginx/ssl/*.key
+/docker/nginx/logs/

@@ -22,7 +22,7 @@ class TBankPaymentStrategy implements PaymentStrategyInterface
 
     public function createPayment(CreatePaymentCommand $command): PaymentCreationResultDTO
     {
-        if (!$this->terminalKey || !$this->password || $this->apiUrl) {
+        if (!$this->terminalKey || !$this->password || !$this->apiUrl) {
             throw new \RuntimeException('T-Bank credentials are not configured. Please set TBANK_TERMINAL_KEY, TBANK_PASSWORD and TBANK_API_URL environment variables.');
         }
 
