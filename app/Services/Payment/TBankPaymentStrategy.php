@@ -9,19 +9,23 @@ use Illuminate\Support\Str;
 
 class TBankPaymentStrategy implements PaymentStrategyInterface
 {
-    private string $terminalKey;
-    private string $password;
-    private string $apiUrl;
+    private ?string $terminalKey;
+    private ?string $password;
+    private ?string $apiUrl;
 
     public function __construct()
     {
         $this->terminalKey = config('services.tbank.terminal_key');
         $this->password = config('services.tbank.password');
-        $this->apiUrl = config('services.tbank.api_url', 'https://securepay.tinkoff.ru/v2');
+        $this->apiUrl = config('services.tbank.api_url');
     }
 
     public function createPayment(CreatePaymentCommand $command): PaymentCreationResultDTO
     {
+        if (!$this->terminalKey || !$this->password || $this->apiUrl) {
+            throw new \RuntimeException('T-Bank credentials are not configured. Please set TBANK_TERMINAL_KEY, TBANK_PASSWORD and TBANK_API_URL environment variables.');
+        }
+
         $orderId = Str::uuid()->toString();
         $amountInKopecks = (int) ($command->amount * 100);
 
