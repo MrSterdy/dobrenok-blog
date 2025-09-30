@@ -84,6 +84,12 @@ class TBankWebhookStrategy implements WebhookStrategyInterface
             if (is_array($value) || is_object($value)) {
                 continue;
             }
+
+            // Преобразуем boolean в строку согласно документации T-Bank
+            if (is_bool($value)) {
+                $value = $value ? 'true' : 'false';
+            }
+
             $signString .= $value;
         }
 
