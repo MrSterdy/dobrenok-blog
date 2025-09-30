@@ -18,7 +18,7 @@ use OpenApi\Attributes as OA;
     description: "Local development server"
 )]
 #[OA\Server(
-    url: "https://api.dobrenok.com/api/v1",
+    url: "https://drbgc-178-205-174-86.a.free.pinggy.link/api/v1",
     description: "Production server"
 )]
 #[OA\SecurityScheme(

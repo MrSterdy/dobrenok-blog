@@ -15,7 +15,7 @@
             "description": "Local development server"
         },
         {
-            "url": "https://api.dobrenok.com/api/v1",
+            "url": "https://drbgc-178-205-174-86.a.free.pinggy.link/api/v1",
             "description": "Production server"
         }
     ],
@@ -504,6 +504,141 @@
                 }
             }
         },
+        "/projects/{id}/payments": {
+            "post": {
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Создать платеж",
+                "description": "Создает новый платеж для проекта через выбранную платежную систему",
+                "operationId": "8431a8692da409c26f36506730fd91ea",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID проекта",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "amount",
+                                    "currency",
+                                    "description"
+                                ],
+                                "properties": {
+                                    "amount": {
+                                        "description": "Сумма платежа",
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 1000.5
+                                    },
+                                    "currency": {
+                                        "description": "Валюта (RUB, USD, EUR)",
+                                        "type": "string",
+                                        "example": "RUB"
+                                    },
+                                    "description": {
+                                        "description": "Описание платежа",
+                                        "type": "string",
+                                        "example": "Оплата услуг"
+                                    },
+                                    "customer_email": {
+                                        "description": "Email покупателя для чека",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user@example.com",
+                                        "nullable": true
+                                    },
+                                    "customer_phone": {
+                                        "description": "Телефон покупателя для чека",
+                                        "type": "string",
+                                        "example": "+79001234567",
+                                        "nullable": true
+                                    },
+                                    "success_url": {
+                                        "description": "URL успешной оплаты",
+                                        "type": "string",
+                                        "format": "uri",
+                                        "example": "https://example.com/success",
+                                        "nullable": true
+                                    },
+                                    "fail_url": {
+                                        "description": "URL неуспешной оплаты",
+                                        "type": "string",
+                                        "format": "uri",
+                                        "example": "https://example.com/fail",
+                                        "nullable": true
+                                    },
+                                    "payment_provider": {
+                                        "description": "Платежная система",
+                                        "type": "string",
+                                        "enum": [
+                                            "tbank"
+                                        ],
+                                        "example": "tbank"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Платеж создан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Resource created successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Payment"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/projects/{id}/posts": {
             "get": {
                 "tags": [
@@ -922,6 +1057,195 @@
                     }
                 }
             }
+        },
+        "/projects/{id}/subscriptions": {
+            "post": {
+                "tags": [
+                    "Subscriptions"
+                ],
+                "summary": "Создать подписку",
+                "description": "Создает новую подписку с произвольной суммой для проекта",
+                "operationId": "268492a221d01ee71400ffd7834bb6f2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID проекта",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "amount",
+                                    "currency",
+                                    "description"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "description": "Email подписчика",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user@example.com"
+                                    },
+                                    "name": {
+                                        "description": "Имя подписчика",
+                                        "type": "string",
+                                        "example": "Иван Иванов",
+                                        "nullable": true
+                                    },
+                                    "amount": {
+                                        "description": "Сумма подписки (любая)",
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 500
+                                    },
+                                    "currency": {
+                                        "description": "Валюта (RUB, USD, EUR)",
+                                        "type": "string",
+                                        "example": "RUB"
+                                    },
+                                    "description": {
+                                        "description": "Описание подписки",
+                                        "type": "string",
+                                        "example": "Ежемесячная поддержка"
+                                    },
+                                    "success_url": {
+                                        "description": "URL успешной оплаты",
+                                        "type": "string",
+                                        "format": "uri",
+                                        "example": "https://example.com/success",
+                                        "nullable": true
+                                    },
+                                    "fail_url": {
+                                        "description": "URL неуспешной оплаты",
+                                        "type": "string",
+                                        "format": "uri",
+                                        "example": "https://example.com/fail",
+                                        "nullable": true
+                                    },
+                                    "payment_provider": {
+                                        "description": "Платежная система",
+                                        "type": "string",
+                                        "enum": [
+                                            "tbank"
+                                        ],
+                                        "example": "tbank"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Подписка создана",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Resource created successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Subscription"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/webhooks/payments/{provider}": {
+            "post": {
+                "tags": [
+                    "Webhooks"
+                ],
+                "summary": "Обработка вебхука от платежной системы",
+                "description": "Принимает уведомления о статусе платежа от платежных систем",
+                "operationId": "517ba3104fb023bc6457e8678f4260a5",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "description": "Идентификатор платежной системы (tbank)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "tbank"
+                            ],
+                            "example": "tbank"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Вебхук успешно обработан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "OK"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибка обработки вебхука",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Invalid signature"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1120,6 +1444,65 @@
                 },
                 "type": "object"
             },
+            "Payment": {
+                "description": "Платеж",
+                "properties": {
+                    "id": {
+                        "description": "ID платежа",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "external_payment_id": {
+                        "description": "Внешний ID платежа",
+                        "type": "string",
+                        "example": "12345678"
+                    },
+                    "status": {
+                        "description": "Статус платежа",
+                        "type": "string",
+                        "example": "pending"
+                    },
+                    "amount": {
+                        "description": "Сумма платежа",
+                        "type": "number",
+                        "format": "float",
+                        "example": 1000.5
+                    },
+                    "currency": {
+                        "description": "Валюта",
+                        "type": "string",
+                        "example": "RUB"
+                    },
+                    "project_id": {
+                        "description": "ID проекта",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "payment_url": {
+                        "description": "URL для оплаты",
+                        "type": "string",
+                        "example": "https://securepay.tinkoff.ru/...",
+                        "nullable": true
+                    },
+                    "finished_at": {
+                        "description": "Дата завершения",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "description": "Дата создания",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Дата обновления",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
             "Post": {
                 "description": "Пост блога",
                 "properties": {
@@ -1259,6 +1642,84 @@
                         "type": "string",
                         "format": "date-time",
                         "example": "2024-01-15T10:30:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Subscription": {
+                "description": "Подписка",
+                "properties": {
+                    "id": {
+                        "description": "ID подписки",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "email": {
+                        "description": "Email подписчика",
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    },
+                    "name": {
+                        "description": "Имя подписчика",
+                        "type": "string",
+                        "example": "Иван Иванов",
+                        "nullable": true
+                    },
+                    "amount": {
+                        "description": "Сумма подписки",
+                        "type": "number",
+                        "format": "float",
+                        "example": 500
+                    },
+                    "currency": {
+                        "description": "Валюта",
+                        "type": "string",
+                        "example": "RUB"
+                    },
+                    "status": {
+                        "description": "Статус подписки",
+                        "type": "string",
+                        "example": "active"
+                    },
+                    "external_subscription_id": {
+                        "description": "Внешний ID подписки",
+                        "type": "string",
+                        "example": "12345",
+                        "nullable": true
+                    },
+                    "project_id": {
+                        "description": "ID проекта",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "payment_url": {
+                        "description": "URL для первого платежа",
+                        "type": "string",
+                        "example": "https://securepay.tinkoff.ru/...",
+                        "nullable": true
+                    },
+                    "next_billing_date": {
+                        "description": "Дата следующего платежа",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "cancelled_at": {
+                        "description": "Дата отмены",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "description": "Дата создания",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Дата обновления",
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "type": "object"
@@ -1404,12 +1865,24 @@
             "description": "Партнеры проектов"
         },
         {
+            "name": "Payments",
+            "description": "Платежи"
+        },
+        {
             "name": "Posts",
             "description": "Управление постами блога"
         },
         {
             "name": "Projects",
             "description": "Управление проектами"
+        },
+        {
+            "name": "Subscriptions",
+            "description": "Подписки"
+        },
+        {
+            "name": "Webhooks",
+            "description": "Вебхуки платежных систем"
         }
     ]
 }
