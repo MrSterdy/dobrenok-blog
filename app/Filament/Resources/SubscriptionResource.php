@@ -54,8 +54,15 @@ class SubscriptionResource extends Resource
                         'expired' => 'Истекла',
                     ])
                     ->disabled(),
+                Forms\Components\TextInput::make('customer_key')
+                    ->label('Customer Key (T-Bank)')
+                    ->disabled()
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('external_subscription_id')
                     ->label('ID подписки')
+                    ->disabled(),
+                Forms\Components\TextInput::make('rebill_id')
+                    ->label('Rebill ID (для автоплатежей)')
                     ->disabled(),
                 Forms\Components\DateTimePicker::make('next_billing_date')
                     ->label('Следующий платеж')

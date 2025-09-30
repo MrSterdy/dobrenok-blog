@@ -34,6 +34,28 @@ class TBankPaymentStrategy implements PaymentStrategyInterface
             'NotificationURL' => $this->getNotificationUrl(),
         ];
 
+        // Рекуррентный платеж (для подписок)
+        if ($command->is_recurrent) {
+            $data['Recurrent'] = 'Y';
+
+            // CustomerKey обязателен при Recurrent=Y согласно документации
+            if (!$command->customer_key) {
+                throw new \InvalidArgumentException('CustomerKey is required when is_recurrent is true');
+            }
+            $data['CustomerKey'] = $command->customer_key;
+        }
+
+        // Автоплатеж по сохраненному RebillId
+        if ($command->rebill_id) {
+            $data['RebillId'] = $command->rebill_id;
+
+            // CustomerKey обязателен при использовании RebillId
+            if (!$command->customer_key) {
+                throw new \InvalidArgumentException('CustomerKey is required when rebill_id is provided');
+            }
+            $data['CustomerKey'] = $command->customer_key;
+        }
+
         if ($command->success_url) {
             $data['SuccessURL'] = $command->success_url;
         }

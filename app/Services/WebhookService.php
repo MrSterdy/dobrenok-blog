@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\PaymentProvider;
 use App\Enums\PaymentStatus;
 use App\Models\Payment;
+use App\Models\Subscription;
 use App\Repositories\Contracts\PaymentRepositoryInterface;
 use App\Services\Payment\TBankWebhookStrategy;
 use App\Services\Payment\WebhookStrategyInterface;
@@ -71,6 +72,12 @@ class WebhookService
                 'error_code' => $webhookData->error_code,
                 'error_message' => $webhookData->error_message,
             ]);
+
+            // Если это рекуррентный платеж и получен RebillId, сохраняем его в подписку
+            $rebillId = $webhookData->additional_data['rebill_id'] ?? null;
+            if ($rebillId && $webhookData->status === 'completed') {
+                $this->saveRebillIdToSubscription($payment, $rebillId);
+            }
         }
 
         return $updated;
@@ -83,5 +90,23 @@ class WebhookService
         }
 
         return $this->strategies[$provider->value];
+    }
+
+    private function saveRebillIdToSubscription(Payment $payment, string $rebillId): void
+    {
+        // Ищем подписку по external_subscription_id (который равен PaymentId первого платежа)
+        $subscription = Subscription::where('external_subscription_id', $payment->external_payment_id)
+            ->whereNull('rebill_id')
+            ->first();
+
+        if ($subscription) {
+            $subscription->update(['rebill_id' => $rebillId]);
+
+            Log::info('RebillId saved to subscription', [
+                'subscription_id' => $subscription->id,
+                'rebill_id' => $rebillId,
+                'payment_id' => $payment->id,
+            ]);
+        }
     }
 }

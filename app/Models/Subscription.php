@@ -14,10 +14,12 @@ class Subscription extends Model
     protected $fillable = [
         'email',
         'name',
+        'customer_key',
         'amount',
         'currency',
         'status',
         'external_subscription_id',
+        'rebill_id',
         'project_id',
         'next_billing_date',
         'cancelled_at',

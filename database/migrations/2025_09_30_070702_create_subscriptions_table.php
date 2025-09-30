@@ -15,10 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('email');
             $table->string('name')->nullable();
+            $table->string('customer_key'); // Уникальный ключ клиента для T-Bank
             $table->decimal('amount', 10, 2);
             $table->string('currency');
             $table->string('status'); // active, cancelled, expired
             $table->string('external_subscription_id')->nullable();
+            $table->string('rebill_id')->nullable(); // RebillId от T-Bank для автоплатежей
             $table->foreignId('project_id')->constrained()->cascadeOnDelete();
             $table->timestamp('next_billing_date')->nullable();
             $table->timestamp('cancelled_at')->nullable();
