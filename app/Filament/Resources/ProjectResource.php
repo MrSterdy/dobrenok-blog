@@ -35,7 +35,7 @@ class ProjectResource extends Resource
                 Forms\Components\TextInput::make('home_url')
                     ->label('URL домашней страницы')
                     ->maxLength(255),
-                Forms\Components\FileUpload::make('cover_photo_path')
+                Forms\Components\FileUpload::make('cover_photo_url')
                     ->label('Обложка')
                     ->disk('public')
                     ->directory('project-images')
@@ -58,11 +58,11 @@ class ProjectResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label('Название')
                     ->searchable()
-                    ->sortable(),   
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('home_url')
                     ->label('URL домашней страницы')
                     ->sortable(),
-                Tables\Columns\ImageColumn::make('cover_photo_path')
+                Tables\Columns\ImageColumn::make('cover_photo_url')
                     ->label('Обложка')
                     ->disk('public')
                     ->square(),
