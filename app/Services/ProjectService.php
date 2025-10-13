@@ -48,7 +48,7 @@ class ProjectService
             id: $project->id,
             name: $project->name,
             description: $project->description,
-            cover_photo_url: $project->cover_photo_path ? asset('storage/' . $project->cover_photo_path) : '',
+            cover_photo_url: $project->cover_photo_url ? asset('storage/' . $project->cover_photo_url) : '',
             home_url: $project->home_url,
             posts_count: $project->posts_count ?? 0,
             created_at: $project->created_at->toISOString(),
