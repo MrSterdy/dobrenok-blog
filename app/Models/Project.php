@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Project extends Model
@@ -20,6 +21,16 @@ class Project extends Model
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class);
+    }
+
+    public function paymentGoals(): HasMany
+    {
+        return $this->hasMany(ProjectPaymentGoal::class);
+    }
+
+    public function activePaymentGoal(): HasOne
+    {
+        return $this->hasOne(ProjectPaymentGoal::class)->where('is_active', true);
     }
 
     public function partners(): HasMany

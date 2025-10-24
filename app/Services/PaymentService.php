@@ -31,13 +31,16 @@ class PaymentService
         $paymentResult = $strategy->createPayment($command);
 
         // Сохраняем платеж в базе данных через репозиторий
-        $payment = $this->paymentRepository->create([
-            'external_payment_id' => $paymentResult->external_payment_id,
-            'status' => PaymentStatus::from($paymentResult->status),
-            'amount' => $command->amount,
-            'currency' => $command->currency,
-            'project_id' => $command->project_id,
-        ]);
+        $createPaymentCommand = new CreatePaymentCommand(
+            project_id: $command->project_id,
+            amount: $command->amount,
+            currency: $command->currency,
+            description: $command->description,
+            payment_provider: $command->payment_provider,
+            external_payment_id: $paymentResult->external_payment_id,
+            status: PaymentStatus::from($paymentResult->status)
+        );
+        $payment = $this->paymentRepository->create($createPaymentCommand);
 
         return $this->mapToDTO($payment, $paymentResult->payment_url);
     }

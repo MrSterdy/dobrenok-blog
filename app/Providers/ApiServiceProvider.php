@@ -11,6 +11,7 @@ use App\Repositories\Contracts\EventRepositoryInterface;
 use App\Repositories\Contracts\ApplicationRepositoryInterface;
 use App\Repositories\Contracts\PaymentRepositoryInterface;
 use App\Repositories\Contracts\SubscriptionRepositoryInterface;
+use App\Repositories\Contracts\ProjectPaymentGoalRepositoryInterface;
 use App\Repositories\PostRepository;
 use App\Repositories\ProjectRepository;
 use App\Repositories\EmployeeRepository;
@@ -27,6 +28,7 @@ use App\Services\ApplicationService;
 use App\Services\PaymentService;
 use App\Services\SubscriptionService;
 use App\Services\WebhookService;
+use App\Repositories\ProjectPaymentGoalRepository;
 use Illuminate\Support\ServiceProvider;
 
 class ApiServiceProvider extends ServiceProvider
@@ -41,6 +43,7 @@ class ApiServiceProvider extends ServiceProvider
         $this->app->scoped(ApplicationRepositoryInterface::class, ApplicationRepository::class);
         $this->app->scoped(PaymentRepositoryInterface::class, PaymentRepository::class);
         $this->app->scoped(SubscriptionRepositoryInterface::class, SubscriptionRepository::class);
+        $this->app->scoped(ProjectPaymentGoalRepositoryInterface::class, ProjectPaymentGoalRepository::class);
 
         $this->app->scoped(PostService::class);
         $this->app->scoped(ProjectService::class);

@@ -3,6 +3,7 @@
 namespace App\Commands;
 
 use App\Enums\PaymentProvider;
+use App\Enums\PaymentStatus;
 
 readonly class CreatePaymentCommand
 {
@@ -10,7 +11,7 @@ readonly class CreatePaymentCommand
         public int $project_id,
         public float $amount,
         public string $currency,
-        public string $description,
+        public string $description = '',
         public ?string $customer_email = null,
         public ?string $customer_phone = null,
         public ?string $customer_key = null,
@@ -19,5 +20,7 @@ readonly class CreatePaymentCommand
         public PaymentProvider $payment_provider = PaymentProvider::TBANK,
         public bool $is_recurrent = false,
         public ?string $rebill_id = null,
+        public ?string $external_payment_id = null,
+        public ?PaymentStatus $status = null,
     ) {}
 }

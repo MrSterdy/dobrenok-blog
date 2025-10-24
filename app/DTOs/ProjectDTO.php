@@ -15,6 +15,7 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: "cover_photo_url", type: "string", nullable: true, description: "URL обложки проекта", example: "http://localhost:8000/storage/project-images/cover.jpg"),
         new OA\Property(property: "home_url", type: "string", nullable: true, description: "URL домашней страницы проекта", example: "http://localhost:8000/projects/1"),
         new OA\Property(property: "posts_count", type: "integer", description: "Количество постов в проекте", example: 5),
+        new OA\Property(property: "payment_goal", ref: "#/components/schemas/ProjectPaymentGoal", nullable: true, description: "Активная цель сбора средств"),
         new OA\Property(property: "created_at", type: "string", format: "date-time", description: "Дата создания", example: "2024-01-15T10:30:00Z"),
         new OA\Property(property: "updated_at", type: "string", format: "date-time", description: "Дата обновления", example: "2024-01-15T10:30:00Z"),
     ]
@@ -28,6 +29,7 @@ readonly class ProjectDTO
         public ?string $cover_photo_url,
         public ?string $home_url,
         public int $posts_count,
+        public ?ProjectPaymentGoalDTO $payment_goal,
         public string $created_at,
         public string $updated_at,
     ) {}
@@ -41,6 +43,7 @@ readonly class ProjectDTO
             'cover_photo_url' => $this->cover_photo_url,
             'home_url' => $this->home_url,
             'posts_count' => $this->posts_count,
+            'payment_goal' => $this->payment_goal?->toArray(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

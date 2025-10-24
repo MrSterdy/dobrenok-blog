@@ -12,7 +12,9 @@ class ProjectRepository implements ProjectRepositoryInterface
 {
     public function getProjects(GetProjectsQuery $query): LengthAwarePaginator
     {
-        $builder = Project::query()->withCount('posts');
+        $builder = Project::query()
+            ->withCount('posts')
+            ->with('activePaymentGoal');
 
         if ($query->search) {
             $builder->where(function ($q) use ($query) {
@@ -35,7 +37,7 @@ class ProjectRepository implements ProjectRepositoryInterface
     {
         return Project::query()
             ->withCount('posts')
+            ->with('activePaymentGoal')
             ->find($query->id);
     }
 }
-

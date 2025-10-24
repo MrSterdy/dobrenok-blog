@@ -1631,6 +1631,90 @@
                         "type": "integer",
                         "example": 5
                     },
+                    "payment_goal": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/ProjectPaymentGoal"
+                            }
+                        ],
+                        "nullable": true,
+                        "description": "Активная цель сбора средств"
+                    },
+                    "created_at": {
+                        "description": "Дата создания",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15T10:30:00Z"
+                    },
+                    "updated_at": {
+                        "description": "Дата обновления",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15T10:30:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "ProjectPaymentGoal": {
+                "description": "Цель сбора средств для проекта",
+                "properties": {
+                    "id": {
+                        "description": "ID цели",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "target_amount": {
+                        "description": "Целевая сумма",
+                        "type": "number",
+                        "format": "float",
+                        "example": 10000
+                    },
+                    "current_amount": {
+                        "description": "Текущая накопленная сумма",
+                        "type": "number",
+                        "format": "float",
+                        "example": 2500
+                    },
+                    "currency": {
+                        "description": "Валюта",
+                        "type": "string",
+                        "example": "RUB"
+                    },
+                    "description": {
+                        "description": "Описание цели",
+                        "type": "string",
+                        "example": "Сбор средств на разработку новой функции",
+                        "nullable": true
+                    },
+                    "deadline": {
+                        "description": "Крайний срок",
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-12-31",
+                        "nullable": true
+                    },
+                    "progress_percentage": {
+                        "description": "Процент выполнения",
+                        "type": "number",
+                        "format": "float",
+                        "example": 25
+                    },
+                    "remaining_amount": {
+                        "description": "Оставшаяся сумма",
+                        "type": "number",
+                        "format": "float",
+                        "example": 7500
+                    },
+                    "is_goal_reached": {
+                        "description": "Достигнута ли цель",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "is_active": {
+                        "description": "Активна ли цель",
+                        "type": "boolean",
+                        "example": true
+                    },
                     "created_at": {
                         "description": "Дата создания",
                         "type": "string",
