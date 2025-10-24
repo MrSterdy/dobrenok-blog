@@ -11,7 +11,9 @@
         "filament/filament": "3.3",
         "firefly/filament-blog": "^2.0",
         "laravel/framework": "^12.0",
-        "laravel/tinker": "^2.10.1"
+        "laravel/tinker": "^2.10.1",
+        "telegram-bot/api": "^2.5",
+        "vkcom/vk-php-sdk": "^5.131"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

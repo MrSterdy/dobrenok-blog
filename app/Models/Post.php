@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\FileUpload;
@@ -17,6 +18,7 @@ use Firefly\FilamentBlog\Models\Category;
 use Firefly\FilamentBlog\Models\Post as FilamentBlogPost;
 use Firefly\FilamentBlog\Models\Tag;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
@@ -39,6 +41,30 @@ class Post extends FilamentBlogPost
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+
+    public function publications(): HasMany
+    {
+        return $this->hasMany(PostPublication::class);
+    }
+
+    /**
+     * Получить публикации в определенной соцсети
+     */
+    public function getPublicationForIntegration(int $integrationId): ?PostPublication
+    {
+        return $this->publications()->where('integration_id', $integrationId)->first();
+    }
+
+    /**
+     * Проверить, был ли пост опубликован в определенной соцсети
+     */
+    public function isPublishedTo(int $integrationId): bool
+    {
+        return $this->publications()
+            ->where('integration_id', $integrationId)
+            ->where('status', 'published')
+            ->exists();
     }
 
     public static function getForm()
@@ -144,6 +170,38 @@ class Post extends FilamentBlogPost
                         ->nullable(false)
                         ->default(Auth::id()),
                 ]),
+
+            Section::make('Публикация в социальных сетях')
+                ->schema(function () {
+                    // Получаем все активные интеграции
+                    $integrations = \App\Models\Integration::where('is_active', true)->get();
+
+                    if ($integrations->isEmpty()) {
+                        return [
+                            Forms\Components\Placeholder::make('no_integrations')
+                                ->label('Нет активных интеграций')
+                                ->content('Настройте интеграции с социальными сетями в разделе "Настройки"'),
+                        ];
+                    }
+
+                    // Динамически создаем toggle для каждой активной интеграции
+                    $toggles = [];
+                    foreach ($integrations as $integration) {
+                        $toggles[] = Forms\Components\Toggle::make("publish_to_{$integration->type}")
+                            ->label("Опубликовать в {$integration->name}")
+                            ->default(true)
+                            ->inline(false)
+                            ->helperText("Пост будет автоматически опубликован: {$integration->name}");
+                    }
+
+                    return [
+                        Fieldset::make('Выберите социальные сети для публикации')
+                            ->schema($toggles)
+                            ->columns(2),
+                    ];
+                })
+                ->description('Публикация произойдет автоматически при смене статуса на "Опубликовано"')
+                ->collapsible(),
         ];
     }
 }
